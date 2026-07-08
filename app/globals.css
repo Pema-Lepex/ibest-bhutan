@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../node_modules/react-tailwindcss-datepicker/dist/index.esm.js";
 
 :root {
   --background: #ffffff;
@@ -8,19 +9,84 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins);
+  --font-title: var(--font-inter);
+  --font-poppins: var(--font-poppins);
+  --font-inter: var(--font-inter);
 }
+@theme {
+  /* --- CUSTOM BREAKPOINTS / SCREENS --- */
+  --breakpoint-8k: 7680px;
+  --breakpoint-tv-wide: 4096px;
+  --breakpoint-6xl: 3840px;
+  --breakpoint-5xl: 3200px;
+  --breakpoint-4xl: 2560px;
+  --breakpoint-3xl: 1920px;
+  --breakpoint-2xl: 1536px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-md: 768px;
+  --breakpoint-sm: 640px;
+  --breakpoint-xs: 480px;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* --- CUSTOM ANIMATIONS --- */
+  --animate-spin: spin 1s linear infinite;
+  --animate-fadeIn: fade-in 0.5s ease forwards;
+  --animate-marquee: marquee 35s linear infinite;
+
+  /* --- CUSTOM KEYFRAMES --- */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes fade-in {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+ /* --- CUSTOM COLORS --- */
+  --color-primary-50: #EFF4F8;
+  --color-primary-100: #DCE6F0;
+  --color-primary-200: #B1C9DE;
+  --color-primary-300: #86ABCC;
+  --color-primary-400: #306EAA;
+  --color-primary-500: #0B2C56; /* The signature deep blue from the header */
+  --color-primary-600: #0A284E;
+  --color-primary-700: #071B34;
+  --color-primary-800: #051428;
+  --color-primary-900: #030D1B;
+  /* --- ACCENT COLORS --- */
+  --color-accent-50:  #ECFDF5;
+  --color-accent-100: #D1FAE5;
+  --color-accent-200: #A7F3D0;
+  --color-accent-300: #6EE7B7;
+  --color-accent-400: #34D399;
+  --color-accent-500: #10B981; /* Primary Accent */
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065F46;
+  --color-accent-900: #064E3B;
+
+}
+@utility hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+  
+  &::-webkit-scrollbar {
+    display: none;           /* Chrome, Safari, and Opera */
   }
 }
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), "Poppins", Tahoma, Geneva, sans-serif;
+}
+
+/* Headings use the title font (Inter), matching the reference site */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-inter), "Inter", Arial, Helvetica, sans-serif;
 }
