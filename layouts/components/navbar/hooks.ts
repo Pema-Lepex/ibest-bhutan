@@ -6,21 +6,21 @@ import { usePathname } from "next/navigation";
 import type { NavLink } from "../NavMenuList";
 
 export type IsLinkActive = (link: NavLink) => boolean;
+export type IsAnchorActive = (href: string) => boolean;
 export type HandleAnchorClick = (
   e: MouseEvent<HTMLAnchorElement>,
   href: string,
 ) => void;
 
-// Auto-advancing carousel index.
-export function useCarousel(length: number, intervalMs = 5000) {
+// Auto-advancing carousel index. Pauses while `paused` is true so the slide
+// doesn't change out from under someone interacting with the hero.
+export function useCarousel(length: number, intervalMs = 6000, paused = false) {
   const [slide, setSlide] = useState(0);
   useEffect(() => {
-    const id = setInterval(
-      () => setSlide((s) => (s + 1) % length),
-      intervalMs,
-    );
+    if (paused || length < 2) return;
+    const id = setInterval(() => setSlide((s) => (s + 1) % length), intervalMs);
     return () => clearInterval(id);
-  }, [length, intervalMs]);
+  }, [length, intervalMs, paused]);
   return { slide, setSlide };
 }
 
@@ -39,7 +39,19 @@ export function useScrolled(ratio = 0.6) {
 }
 
 // The in-page sections the navbar scroll-spy watches, top to bottom.
-const SECTION_IDS = ["home", "about", "services", "contact"];
+// Keep in sync with the section ids rendered by app/page.tsx.
+const SECTION_IDS = [
+  "home",
+  "about",
+  "values",
+  "services",
+  "why",
+  "experiences",
+  "people",
+  "courses",
+  "blog",
+  "contact",
+];
 
 // Active-link detection (scroll-spy across all sections) plus a smooth-scroll
 // click handler. `onNavigate` fires on every link click so callers can, e.g.,
@@ -67,18 +79,22 @@ export function useNavLinks(onNavigate?: () => void) {
     return () => observer.disconnect();
   }, [pathname]);
 
+  // An anchor ("/#about") is active when we're on the home page and its section
+  // is the one currently in view.
+  const isAnchorActive: IsAnchorActive = (href) =>
+    href.startsWith("/#") && pathname === "/" && activeSection === href.slice(2);
+
+  // A dropdown parent is active when any of its children are.
   const isLinkActive: IsLinkActive = (link) => {
-    if (link.sub_menu) {
-      return link.sub_menu.some((sub) => pathname === sub.href);
-    }
-    if (link.href.startsWith("/#")) {
-      return pathname === "/" && activeSection === link.href.slice(2);
-    }
+    if (link.sub_menu) return link.sub_menu.some((sub) => isAnchorActive(sub.href));
+    if (link.href.startsWith("/#")) return isAnchorActive(link.href);
     return pathname === link.href;
   };
 
   const handleAnchorClick: HandleAnchorClick = (e, href) => {
     onNavigate?.();
+    // Only intercept when we're already on the home page. From a detail page we
+    // let Next.js route to "/" and let the browser handle the hash.
     if (href.startsWith("/#") && pathname === "/") {
       const id = href.slice(2);
       const el = document.getElementById(id);
@@ -90,5 +106,5 @@ export function useNavLinks(onNavigate?: () => void) {
     }
   };
 
-  return { isLinkActive, handleAnchorClick };
+  return { isLinkActive, isAnchorActive, handleAnchorClick };
 }

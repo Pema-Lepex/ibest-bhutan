@@ -1,74 +1,91 @@
-import { Heading2, Heading3 } from "@/components";
+import Image from "next/image";
+import { Compass, Target } from "lucide-react";
 import Reveal from "@/components/common/Reveal";
-import { AboutContent } from "@/assets/content/about/AboutContent";
-import Icon from "./Icon";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { Intro, Mission, Purpose } from "@/assets/content/ibest/about";
 
-const { about, values } = AboutContent;
-
-// About Us section — company intro, mission and core values.
+// "Who We Are" — the company intro, purpose and mission.
 export default function AboutSection() {
   return (
-    <section id="about" className="scroll-mt-24 bg-white py-20 md:py-28">
+    <section id="about" className="scroll-mt-20 bg-white py-20 md:py-28">
       <div className="mx-auto max-w-7xl 5xl:max-w-[3200px] px-4 sm:px-6 lg:px-20">
-        {/* Intro */}
-        <Reveal className="mx-auto max-w-3xl 5xl:max-w-5xl text-center">
-          <span className="text-sm font-semibold uppercase tracking-wider text-accent-500">
-            {about.eyebrow}
-          </span>
-          <Heading2 className="mt-3 text-primary-500">
-            {about.heading}{" "}
-            <span className="text-accent-500">{about.headingSpan}</span>
-          </Heading2>
-          <p className="mt-6 text-base leading-relaxed text-slate-600 md:text-lg">
-            {about.body}
-          </p>
-        </Reveal>
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          {/* Copy */}
+          <div>
+            <SectionHeading
+              eyebrow={Intro.eyebrow}
+              title="iBEST Institute"
+              highlight="and Consultancy"
+              align="left"
+            />
 
-        {/* Mission */}
-        <div className="mt-14 grid gap-6 md:grid-cols-2">
-          {about.mission.map((point, i) => (
-            <Reveal key={i} delay={i * 120}>
-              <div className="flex h-full items-start gap-4 rounded-2xl border border-slate-100 bg-primary-50 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-500 text-white">
-                  <Icon name="target" className="h-6 w-6" />
-                </span>
-                <div>
-                  <h4 className="font-semibold text-primary-500">
-                    {about.missionTitle}
-                  </h4>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-600 md:text-base">
-                    {point}
+            <div className="mt-6 space-y-5">
+              {Intro.paragraphs.map((text, i) => (
+                <Reveal key={i} delay={i * 100}>
+                  <p className="text-base leading-relaxed text-slate-600 md:text-lg 4xl:text-2xl">
+                    {text}
                   </p>
-                </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+
+          {/* Image, with the purpose statement floating over its corner */}
+          <Reveal delay={150}>
+            <div className="relative">
+              <div className="overflow-hidden rounded-3xl shadow-xl">
+                <Image
+                  src={Intro.image}
+                  alt="iBEST Institute & Consultancy"
+                  width={1200}
+                  height={596}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-105"
+                />
               </div>
-            </Reveal>
-          ))}
-        </div>
 
-        {/* Core values */}
-        <Reveal className="mt-20 text-center">
-          <span className="text-sm font-semibold uppercase tracking-wider text-accent-500">
-            {values.eyebrow}
-          </span>
-          <Heading3 className="mt-3 text-primary-500">{values.heading}</Heading3>
-        </Reveal>
-
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {values.items.map((item, i) => (
-            <Reveal key={item.title} delay={(i % 3) * 120}>
-              <div className="group h-full rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-accent-200 hover:shadow-lg">
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent-50 text-accent-600 transition-colors duration-300 group-hover:bg-accent-500 group-hover:text-white">
-                  <Icon name="check" className="h-6 w-6" />
+              <div className="mt-6 rounded-3xl bg-primary-500 p-7 shadow-lg lg:absolute lg:-bottom-10 lg:-left-10 lg:mt-0 lg:max-w-sm">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-500 text-white">
+                  <Compass className="h-6 w-6" />
                 </span>
-                <h4 className="mt-4 text-lg font-semibold text-primary-500">
-                  {item.title}
-                </h4>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  {item.description}
+                <h3 className="mt-4 text-lg font-semibold text-white">
+                  {Purpose.heading}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/75">
+                  {Purpose.body}
                 </p>
               </div>
-            </Reveal>
-          ))}
+            </div>
+          </Reveal>
+        </div>
+
+        {/* Mission */}
+        <div className="mt-24 lg:mt-32">
+          <SectionHeading
+            eyebrow="What drives us"
+            title={Mission.heading}
+            subtitle="Five commitments that shape every programme we run and every client we take on."
+          />
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Mission.items.map((item, i) => (
+              <Reveal key={item} delay={(i % 3) * 120}>
+                <div className="group h-full rounded-2xl border border-slate-100 bg-slate-50/70 p-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-accent-200 hover:bg-white hover:shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-500 text-white transition-colors duration-300 group-hover:bg-accent-500">
+                      <Target className="h-5 w-5" />
+                    </span>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                      0{i + 1}
+                    </span>
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-slate-700 md:text-base">
+                    {item}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>

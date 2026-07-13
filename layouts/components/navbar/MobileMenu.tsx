@@ -3,145 +3,173 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { CreativerseLogo, DownArrowIcon } from "@/assets";
-import { CommonParagraph4 } from "@/components";
+import { ChevronDown, Mail, Phone, X } from "lucide-react";
+import { IbestLogo } from "@/assets";
 import { NAV_LINKS } from "../NavMenuList";
-import { CONTACT_HREF, PHONE_HREF } from "./constants";
-import type { HandleAnchorClick, IsLinkActive } from "./hooks";
+import { SiteInfo } from "@/assets/content/ibest/site";
+import { REGISTER_HREF } from "./constants";
+import type { HandleAnchorClick, IsAnchorActive, IsLinkActive } from "./hooks";
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   isLinkActive: IsLinkActive;
+  isAnchorActive: IsAnchorActive;
   handleAnchorClick: HandleAnchorClick;
 }
 
-// Slide-down mobile menu overlay shared by both header bars.
+// Slide-in mobile menu. Like the desktop nav, every entry is an in-page anchor.
 export default function MobileMenu({
   isOpen,
   onClose,
   isLinkActive,
+  isAnchorActive,
   handleAnchorClick,
 }: MobileMenuProps) {
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
 
   return (
-    <div className={`fixed inset-0 z-60 md:hidden ${isOpen ? "visible" : "invisible"}`}>
+    <div
+      inert={!isOpen}
+      className={`fixed inset-0 z-60 lg:hidden ${
+        isOpen ? "visible" : "invisible"
+      }`}
+    >
       {/* Backdrop */}
-      <div
+      <button
+        type="button"
+        aria-label="Close menu"
         onClick={onClose}
-        className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+        className={`absolute inset-0 h-full w-full bg-primary-900/60 backdrop-blur-sm transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0"
         }`}
       />
 
-      {/* Sliding panel */}
+      {/* Panel */}
       <div
-        className={`absolute inset-x-0 top-0 max-h-screen overflow-y-auto bg-white transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-y-0" : "-translate-y-full"
+        className={`absolute inset-y-0 right-0 flex w-[85%] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+          isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
+        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
           <Image
-            src={CreativerseLogo}
-            alt="iBest Logo"
-            width={160}
-            height={54}
-            style={{ width: "auto" }}
+            src={IbestLogo}
+            alt="iBEST Institute & Consultancy"
+            width={165}
+            height={100}
             className="h-10 w-auto"
           />
           <button
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="relative flex h-9 w-9 items-center justify-center rounded-md text-slate-700"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
           >
-            <span className="absolute h-0.5 w-5 rotate-45 rounded-full bg-current" />
-            <span className="absolute h-0.5 w-5 -rotate-45 rounded-full bg-current" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <ul className="flex flex-col gap-1 px-4 pb-4 pt-2">
-          {NAV_LINKS.map((link) => (
-            <li key={link.label}>
-              {link.sub_menu ? (
-                <>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setOpenSubMenu(
-                        openSubMenu === link.label ? null : link.label,
-                      )
-                    }
-                    className="flex w-full items-center justify-between rounded-md px-3 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-accent-300"
-                  >
-                    <CommonParagraph4>{link.label}</CommonParagraph4>
-                    <DownArrowIcon
-                      className={`h-5 w-5 transition-transform duration-300 ${
-                        openSubMenu === link.label ? "rotate-180" : ""
+        <nav className="flex-1 overflow-y-auto px-4 py-4">
+          <ul className="flex flex-col gap-1">
+            {NAV_LINKS.map((link) => {
+              const expanded = openSubMenu === link.label;
+
+              return (
+                <li key={link.label}>
+                  {link.sub_menu ? (
+                    <>
+                      <button
+                        type="button"
+                        aria-expanded={expanded}
+                        onClick={() =>
+                          setOpenSubMenu(expanded ? null : link.label)
+                        }
+                        className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-colors ${
+                          isLinkActive(link)
+                            ? "bg-primary-50 text-primary-600"
+                            : "text-slate-700 hover:bg-slate-50"
+                        }`}
+                      >
+                        {link.label}
+                        <ChevronDown
+                          className={`h-5 w-5 transition-transform duration-300 ${
+                            expanded ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      <div
+                        className={`grid transition-all duration-300 ease-out ${
+                          expanded
+                            ? "grid-rows-[1fr] opacity-100"
+                            : "grid-rows-[0fr] opacity-0"
+                        }`}
+                      >
+                        <ul className="ml-4 overflow-hidden border-l border-slate-200">
+                          {link.sub_menu.map((sub) => (
+                            <li key={sub.href}>
+                              <Link
+                                href={sub.href}
+                                onClick={(e) => handleAnchorClick(e, sub.href)}
+                                className={`block py-2.5 pl-5 text-sm transition-colors ${
+                                  isAnchorActive(sub.href)
+                                    ? "font-semibold text-primary-600"
+                                    : "text-slate-600 hover:text-primary-600"
+                                }`}
+                              >
+                                {sub.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      onClick={(e) => handleAnchorClick(e, link.href)}
+                      className={`block rounded-xl px-4 py-3 text-base font-medium transition-colors ${
+                        isLinkActive(link)
+                          ? "bg-primary-50 text-primary-600"
+                          : "text-slate-700 hover:bg-slate-50"
                       }`}
-                    />
-                  </button>
+                    >
+                      {link.label}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      openSubMenu === link.label
-                        ? "max-h-96 opacity-100"
-                        : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <ul className="ml-4 mt-1 border-l border-slate-200">
-                      {link.sub_menu.map((sub) => (
-                        <li key={sub.href}>
-                          <Link
-                            href={sub.href}
-                            onClick={onClose}
-                            className={`block px-5 py-3 text-sm transition-colors ${
-                              isLinkActive({ label: sub.label, href: sub.href })
-                                ? "bg-primary-50 text-accent-300 font-semibold"
-                                : "text-slate-700 hover:bg-slate-50 hover:text-accent-300"
-                            }`}
-                          >
-                            {sub.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </>
-              ) : (
-                <Link
-                  href={link.href}
-                  onClick={(e) => handleAnchorClick(e, link.href)}
-                  className={`block rounded-md px-3 py-2.5 text-base font-medium ${
-                    isLinkActive(link)
-                      ? "text-accent-300 font-semibold"
-                      : "text-slate-700 hover:text-accent-300"
-                  }`}
-                >
-                  <CommonParagraph4>{link.label}</CommonParagraph4>
-                </Link>
-              )}
-            </li>
-          ))}
+        {/* Contact footer */}
+        <div className="border-t border-slate-200 px-5 py-5">
+          <Link
+            href={REGISTER_HREF}
+            onClick={(e) => handleAnchorClick(e, REGISTER_HREF)}
+            className="block rounded-full bg-accent-500 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-600"
+          >
+            Register for a course
+          </Link>
 
-          <li className="mt-2 flex gap-3 border-t border-slate-100 pt-3">
-            <Link
-              href={PHONE_HREF}
-              onClick={onClose}
-              className="flex-1 rounded-full border border-primary-500 px-5 py-2.5 text-center text-sm font-semibold text-primary-600"
+          <div className="mt-4 space-y-2.5">
+            <a
+              href={SiteInfo.phoneHref}
+              className="flex items-center gap-3 text-sm text-slate-600 transition-colors hover:text-primary-600"
             >
-              Call Us
-            </Link>
-            <Link
-              href={CONTACT_HREF}
-              onClick={onClose}
-              className="flex-1 rounded-full bg-primary-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:bg-primary-700"
+              <Phone className="h-4 w-4 text-accent-500" />
+              {SiteInfo.phone}
+            </a>
+            <a
+              href={SiteInfo.emailHref}
+              className="flex items-center gap-3 text-sm text-slate-600 transition-colors hover:text-primary-600"
             >
-              Get a Quote
-            </Link>
-          </li>
-        </ul>
+              <Mail className="h-4 w-4 text-accent-500" />
+              {SiteInfo.email}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );

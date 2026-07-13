@@ -1,21 +1,29 @@
-import Link from "next/link";
-import { CONTACT_HREF, PHONE_HREF } from "./constants";
+"use client";
 
-// The "Call Us" / "Get a Quote" buttons shown in the header bars.
+import Link from "next/link";
+import { Phone } from "lucide-react";
+import { SiteInfo } from "@/assets/content/ibest/site";
+import { PHONE_HREF, REGISTER_HREF } from "./constants";
+
+// The "Call" / "Register" buttons shown in both header bars.
 export default function HeaderButtons() {
   return (
-    <div className="hidden items-center gap-3 sm:flex">
+    <div className="hidden items-center gap-3 lg:flex">
       <Link
         href={PHONE_HREF}
-        className="rounded-full border border-white/70 px-5 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-primary-600"
+        className="group inline-flex items-center gap-2 text-sm font-medium text-white/85 transition-colors hover:text-accent-300"
       >
-        Contact Us
+        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 transition-colors group-hover:border-accent-300">
+          <Phone className="h-4 w-4" />
+        </span>
+        <span className="hidden xl:inline">{SiteInfo.phone}</span>
       </Link>
+
       <Link
-        href={CONTACT_HREF}
-        className="rounded-full bg-accent-300 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:brightness-95"
+        href={REGISTER_HREF}
+        className="rounded-full bg-accent-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-600 hover:shadow-md"
       >
-        Get a Quote
+        Register
       </Link>
     </div>
   );

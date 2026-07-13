@@ -1,4 +1,6 @@
 // Shared contact targets used across the navbar buttons.
-// (Kept in sync with SiteInfo in assets/content/common/SiteContent.tsx)
-export const PHONE_HREF = "tel:+97577886666";
+import { SiteInfo } from "@/assets/content/ibest/site";
+
+export const PHONE_HREF = SiteInfo.phoneHref;
 export const CONTACT_HREF = "/#contact";
+export const REGISTER_HREF = "/#courses";

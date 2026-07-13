@@ -1,3 +1,10 @@
 export { default as AboutSection } from "./AboutSection";
+export { default as ValuesSection } from "./ValuesSection";
 export { default as ServicesSection } from "./ServicesSection";
+export { default as WhyChooseUsSection } from "./WhyChooseUsSection";
+export { default as TestimonialsSection } from "./TestimonialsSection";
+export { default as ExperiencesSection } from "./ExperiencesSection";
+export { default as PeopleSection } from "./PeopleSection";
+export { default as CoursesSection } from "./CoursesSection";
+export { default as BlogSection } from "./BlogSection";
 export { default as ContactSection } from "./ContactSection";
